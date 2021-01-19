@@ -7,7 +7,7 @@
             <div class="row">
                 <div class="col-md-3">
                     <figure>
-                        <img src="<?php echo $this->webroot; ?>img/man-icon.png" class="img-responsive">
+                        <img src="<?php echo $this->webroot; ?>/img/uploads/profiles/default.png" class="img-responsive">
                     </figure>
                 </div>
                 <div class="col-md-9">
