@@ -1,0 +1,45 @@
+form {
+    width: 100%;
+}
+.user-wrapper {
+    background-color: rgba(0, 0, 0, .05);
+    padding: 35px 40px;
+    width: 100%;
+    max-width: 450px;
+    margin: 10% auto 0;
+}
+h2 {
+    background-color: transparent;
+    font-weight: 900;
+}
+.text-white {
+    color: #fff !important;
+}
+.logout {
+    margin-top: 14px;
+}
+.btn-logout {
+    display: inline !important;
+    padding: 4px 8px !important;
+}
+.btn-logout:hover {
+    background-color: #c9320c !important;
+    border-color: #ac2925 !important;
+}
+input[type="submit"] {
+    background-image: none;
+}
+.btn-info {
+    color: #fff !important;
+    background-color: #5bc0de !important;
+    border-color: #46b8da !important;
+}
+.btn-info:hover {
+    background-color: #31b0d5 !important;
+    border-color: #269abc !important;
+}
+.radio > fieldset > legend {
+    color: #333;
+    border-bottom: none;
+    font-size: 110%;
+}
