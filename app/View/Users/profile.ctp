@@ -13,7 +13,18 @@
                 <div class="col-md-9">
                     <div class="profile-wrapper">
                         <h1><?php echo AuthComponent::user('name') ?></h1>
-                        <p><strong>Gender:</strong> <?php echo AuthComponent::user('gender') ?></p>
+                        <p>
+                            <strong>Gender:</strong>
+                            <?php
+                                if (AuthComponent::user('gender') == '1') {
+                                    echo 'Male';
+                                } elseif (AuthComponent::user('gender') == '2') {
+                                    echo 'Female';
+                                } else {
+                                    echo '<i>Not Specified</i>';
+                                }
+                            ?>
+                        </p>
                         <p><strong>Birthdate:</strong> <?php echo date('F j, Y', strtotime(AuthComponent::user('birthdate'))) ?></p>
                         <p><strong>Joined:</strong> <?php echo date('F j, Y h A', strtotime(AuthComponent::user('created'))) ?></p>
                         <p><strong>Last Login:</strong> <?php echo date('F j, Y h A', strtotime(AuthComponent::user('last_login_time'))) ?></p>

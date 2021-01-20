@@ -8,14 +8,16 @@
             <?php echo $this->Form->create('User', array('type' => 'file')); ?>
             <div class="row">
                 <div class="col-md-3">
-                    <figure>
-                        <?php 
-                            $image = AuthComponent::user('image') ? 'uploads/profiles/'.AuthComponent::user('image')  : 'uploads/profiles/default.png'.AuthComponent::user('image');
-                            echo $this->Html->image(
-                                $image,
-                                array('class' => 'img-responsive')
-                            );
-                        ?>
+                    <figure class="photo">
+                        <label for="photo">
+                            <?php 
+                                $image = AuthComponent::user('image') ? 'uploads/profiles/'.AuthComponent::user('image')  : 'uploads/profiles/default.png'.AuthComponent::user('image');
+                                echo $this->Html->image(
+                                    $image,
+                                    array('class' => 'img-responsive preview-photo cursor')
+                                );
+                            ?>
+                        </label>
                     </figure>
                     <?php echo $this->Form->file('photo', array('id' => 'photo', 'label' => 'false')); ?>
                 </div>
@@ -60,11 +62,21 @@
 </div>
 
 <script>
-    $(function() {
-        $('#datepicker').datepicker({
-            dateFormat: "yy-mm-dd"
-        });
-
-
+$(function() {
+    $('#datepicker').datepicker({
+        dateFormat: "yy-mm-dd"
     });
+
+    $('#photo').on('change', function() {
+        if (this.files && this.files[0]) {
+            var reader = new FileReader();
+            
+            reader.onload = function(e) {
+                $('.preview-photo').attr('src', e.target.result);
+            }
+
+            reader.readAsDataURL(this.files[0]);
+        }
+    });
+});
 </script>

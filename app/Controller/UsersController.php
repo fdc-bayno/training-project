@@ -29,8 +29,13 @@ class UsersController extends AppController {
         if ($this->request->is('post')) {
             $this->request->data['User']['created_ip'] = $this->request->ClientIp();
             if ($this->User->save($this->request->data)) {
-                $this->Session->setFlash(__('Thank you for registering.'));
-                return $this->redirect(array('action' => 'thankYou'));
+                if ($this->Auth->login()) {
+                    $this->User->id = $this->Auth->user('id');
+                    $this->User->saveField('last_login_time', date('Y-m-d H:i:s'));
+
+                    $this->Session->setFlash(__('Thank you for registering.'));
+                    $this->redirect(array('action' => 'thankYou'));
+                }
             } else {
                 $this->Session->setFlash(__('User not login.'));
             }
@@ -92,7 +97,24 @@ class UsersController extends AppController {
             );
 
             $this->Session->write('Auth', $this->User->read(null, $this->Auth->user('id')));
-            // $this->redirect(array('action' => 'profile'));
+            $this->redirect(array('action' => 'profile'));
         }
+    }
+    public function allUsers() {
+        $key = $this->request->query['key'];
+        $users = $this->User->find('all', array(
+            'conditions' => array(
+                'User.name LIKE' => '%'.$key.'%'
+            )
+        ));
+
+        $data = array();
+        foreach ($users as $index => $user) {
+            $data[$index]['id'] = (int) $user['User']['id'];
+            $data[$index]['text'] = $user['User']['name'];
+        }
+        
+        echo json_encode($data);
+        exit;
     }
 }

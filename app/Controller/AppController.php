@@ -35,10 +35,10 @@ class AppController extends Controller {
         'Flash',
         'Session',
         'Auth' => array(
-            'loginRedirect' => array(
-                'controller' => 'users',
-                'action' => 'profile'
-            ),
+            // 'loginRedirect' => array(
+            //     'controller' => 'users',
+            //     'action' => 'profile'
+            // ),
             'logoutRedirect' => array(
                 'controller' => 'users',
                 'action' => 'login',

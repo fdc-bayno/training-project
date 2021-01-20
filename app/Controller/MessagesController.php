@@ -4,10 +4,6 @@ class MessagesController extends AppController {
     public $helpers = array('Html', 'Form');
     public $components = array('Flash');
 
-    // public function index() {
-    //     $this->loadModel('Post');
-    //     $this->set('posts', $this->Post->find('all'));
-    // }
     public function view($id = null) {
         if (!$id)
             throw new NotFoundException(__('Invalid Post!'));
@@ -71,10 +67,36 @@ class MessagesController extends AppController {
         return $this->redirect(array('action' => 'index'));
     }
     // 
-    public function index() {
-        
+    private function rr($data) {
+        echo '<pre>';
+        print_r($data);
+        exit;
     }
     public function messageList() {
+        $messages = $this->Message->find('all', array(
+            'conditions' => array(
+                'Message.from_id' => $this->Auth->user('id'),
+                "SELECT * FROM 
+                    (SELECT DISTINCT * FROM messages 
+                    WHERE (from_id=1 OR to_id=1) 
+                    ORDER BY id DESC) as m 
+                    GROUP BY `from_id`
+                "
+            ),
+            'order' => array('id' => 'DESC')
+        ));
         
+
+
+        $this->rr($messages);
+        $this->set('messages', $messages);
+    }
+    public function newMessage() {
+        if ($this->request->is('post')) {
+            $this->request->data['Message']['from_id'] = $this->Auth->user('id');
+            if ($this->Message->save($this->request->data)) {
+                $this->redirect(array('action' => 'messageList'));
+            }
+        }
     }
 }

@@ -43,3 +43,24 @@ input[type="submit"] {
     border-bottom: none;
     font-size: 110%;
 }
+#flashMessage {
+    background-image: none;
+    background-color: #e82828;
+    border: 0;
+    font-weight: normal;
+    font-size: 15px;
+}
+input[type="file"]#photo {
+    position: absolute;
+    z-index: -1;
+    height: 0;
+}
+.cursor {
+    cursor: pointer;
+}
+.preview-photo:hover {
+    opacity: .9;
+}
+.photo label {
+    background-color: #333;
+}

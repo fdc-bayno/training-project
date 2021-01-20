@@ -35,10 +35,12 @@ $cakeVersion = __d('cake_dev', 'CakePHP %s', Configure::version())
 		echo $this->fetch('script');
 		echo $this->Html->css('https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css');
 		echo $this->Html->css('//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css');
+		echo $this->Html->css('https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css');
 		echo $this->Html->css('main.css');
 
 		echo $this->Html->script('https://code.jquery.com/jquery-1.12.4.js');
 		echo $this->Html->script('https://code.jquery.com/ui/1.12.1/jquery-ui.js');
+		echo $this->Html->script('https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js');
 	?>
 </head>
 <body>
@@ -47,24 +49,26 @@ $cakeVersion = __d('cake_dev', 'CakePHP %s', Configure::version())
 			<div class="navbar-header">
 				<a class="navbar-brand" href="#">Message Board</a>
 			</div>
-			<ul class="nav navbar-nav">
-				<li class="active">
-					<?php 
-						echo $this->Html->link(
-							'Profile',
-							array('controller' => 'users', 'action' => 'profile')
-						); 
-					?>
-				</li>
-				<li>
-					<?php 
-						echo $this->Html->link(
-							'Messages',
-							array('controller' => 'messages', 'action' => 'messagesList')
-						); 
-					?>
-				</li>
-			</ul>
+			<?php if ($this->Session->read('Auth.User')) : ?>
+				<ul class="nav navbar-nav">
+					<li>
+						<?php 
+							echo $this->Html->link(
+								'Profile',
+								array('controller' => 'users', 'action' => 'profile')
+							); 
+						?>
+					</li>
+					<li>
+						<?php 
+							echo $this->Html->link(
+								'Messages',
+								array('controller' => 'messages', 'action' => 'messageList')
+							); 
+						?>
+					</li>
+				</ul>
+			<?php endif; ?>
 			<ul class="nav navbar-nav navbar-right">
 				<?php if ($this->Session->read('Auth.User')) : ?>
 					<li>
