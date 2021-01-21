@@ -112,6 +112,7 @@ class UsersController extends AppController {
         foreach ($users as $index => $user) {
             $data[$index]['id'] = (int) $user['User']['id'];
             $data[$index]['text'] = $user['User']['name'];
+            $data[$index]['image'] = ($user['User']['image']) ? $user['User']['image'] : "default.png";
         }
         
         echo json_encode($data);

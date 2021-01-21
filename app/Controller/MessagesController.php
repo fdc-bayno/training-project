@@ -1,95 +1,54 @@
 <?php
 
 class MessagesController extends AppController {
-    public $helpers = array('Html', 'Form');
-    public $components = array('Flash');
+    public $components = array('Paginator', 'Flash');
 
-    public function view($id = null) {
-        if (!$id)
-            throw new NotFoundException(__('Invalid Post!'));
-
-        $this->loadModel('Post');
-        $post = $this->Post->findById($id);
-        
-        if (!$post) 
-            throw new NotFoundException(__('Invalid Post!'));
-        
-        $this->set('post', $post);
-    }
-    public function add() {
-        if ($this->request->is('post')) {
-            $this->loadModel('Post');
-            $this->Post->create();
-            if ($this->Post->save($this->request->data)) {
-                $this->Flash->success(__('Your post has been saved.'));
-                return $this->redirect(array('action' => 'index'));
-            }
-            $this->Flash->error(__('Unable to add your post.'));
-        }
-    }
-    public function edit($id = null) {
-        if (!$id)
-            throw new NotFoundException(__('Invalid Post!'));
-
-        $this->loadModel('Post');
-        $post = $this->Post->findById($id);
-        if (!$post) 
-            throw new NotFoundException(__('Invalid Post!'));
-
-        if ($this->request->is(['post', 'put'])) {
-            $this->Post->id = $id;
-            if ($this->Post->save($this->request->data)) {
-                $this->Flash->success(__('Your post has been updated.'));
-                return $this->redirect(['action' => 'index']);
-            }
-            $this->Flash->error(__('Unable to update your post.'));
-        }
-
-        if (!$this->request->data)
-            $this->request->data = $post;
-    }
-    public function delete($id) {
-        if ($this->request->is('get')) {
-            throw new MethodNotAllowedException();
-        }
-        $this->loadModel('Post');
-
-        if ($this->Post->delete($id)) {
-            $this->Flash->success(
-                __('The post with id: %s has been deleted.', h($id))
-            );
-        } else {
-            $this->Flash->error(
-                __('The post with id: %s could not be deleted.', h($id))
-            );
-        }
-
-        return $this->redirect(array('action' => 'index'));
-    }
-    // 
     private function rr($data) {
         echo '<pre>';
         print_r($data);
         exit;
     }
     public function messageList() {
-        $messages = $this->Message->find('all', array(
-            'conditions' => array(
-                'Message.from_id' => $this->Auth->user('id'),
-                "SELECT * FROM 
-                    (SELECT DISTINCT * FROM messages 
-                    WHERE (from_id=1 OR to_id=1) 
-                    ORDER BY id DESC) as m 
-                    GROUP BY `from_id`
-                "
+        $authId = $this->Auth->user('id');
+        $this->paginate = array('Message' => array(
+            'fields' => array(
+                'Message.*',
+                'Sender.id',
+                'Sender.name',
+                'Sender.image',
+                'Receiver.id',
+                'Receiver.name',
+                'Receiver.image',
             ),
-            'order' => array('id' => 'DESC')
+            'conditions' => array(
+                "Message.id IN
+                (SELECT max(id)
+                    FROM messages
+                    WHERE (messages.from_id = {$authId} OR messages.to_id = {$authId}) AND messages.status = 'active'
+                    GROUP BY 
+                        IF (from_id = {$authId}, to_id, from_id),
+                        IF (from_id != {$authId}, to_id, from_id))"
+            ),
+            'joins' => array(
+                array(
+                    'alias' => 'Sender',
+                    'table' => 'users',
+                    'type' => 'LEFT',
+                    'conditions' => array('Message.from_id = Sender.id')
+                ),
+                array(
+                    'alias' => 'Receiver',
+                    'table' => 'users',
+                    'type' => 'LEFT',
+                    'conditions' => array('Message.to_id = Receiver.id')
+                )
+            ),
+            'order' => 'created DESC',
+            'limit' => 2,
         ));
-        
 
-
-        $this->rr($messages);
-        $this->set('messages', $messages);
+        $messages = $this->paginate('Message');
+        $this->set(compact('messages'));
     }
     public function newMessage() {
         if ($this->request->is('post')) {
@@ -98,5 +57,14 @@ class MessagesController extends AppController {
                 $this->redirect(array('action' => 'messageList'));
             }
         }
+    }
+    public function loadmoreMessage() {
+        if ($this->request->is('ajax')) {
+
+            exit;
+        }
+    }
+    public function messageDetails($id = null) {
+        // #
     }
 }

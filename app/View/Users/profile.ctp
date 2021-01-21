@@ -7,7 +7,13 @@
             <div class="row">
                 <div class="col-md-3">
                     <figure>
-                        <img src="<?php echo $this->webroot; ?>/img/uploads/profiles/default.png" class="img-responsive">
+                        <?php 
+                            $image = AuthComponent::user('image') ? 'uploads/profiles/'.AuthComponent::user('image')  : 'uploads/profiles/default.png'.AuthComponent::user('image');
+                            echo $this->Html->image(
+                                $image,
+                                array('class' => 'img-responsive preview-photo cursor')
+                            );
+                        ?>
                     </figure>
                 </div>
                 <div class="col-md-9">
@@ -26,8 +32,8 @@
                             ?>
                         </p>
                         <p><strong>Birthdate:</strong> <?php echo date('F j, Y', strtotime(AuthComponent::user('birthdate'))) ?></p>
-                        <p><strong>Joined:</strong> <?php echo date('F j, Y h A', strtotime(AuthComponent::user('created'))) ?></p>
-                        <p><strong>Last Login:</strong> <?php echo date('F j, Y h A', strtotime(AuthComponent::user('last_login_time'))) ?></p>
+                        <p><strong>Joined:</strong> <?php echo date('F j, Y h:i A', strtotime(AuthComponent::user('created'))) ?></p>
+                        <p><strong>Last Login:</strong> <?php echo date('F j, Y h:i A', strtotime(AuthComponent::user('last_login_time'))) ?></p>
                     </div>
                 </div>
             </div>

@@ -8,6 +8,12 @@ form {
     max-width: 450px;
     margin: 10% auto 0;
 }
+a,
+a:hover,
+a:focus {
+    text-decoration: none;
+    font-weight: 300;
+}
 h2 {
     background-color: transparent;
     font-weight: 900;
@@ -63,4 +69,83 @@ input[type="file"]#photo {
 }
 .photo label {
     background-color: #333;
+}
+.message-wrapper {
+    max-width: 768px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.card {
+    box-shadow: 0 0 10px 0px #d4d4d4;
+    -webkit-box-shadow: 0 0 10px 0px #d4d4d4;
+    margin: 25px 0;
+    padding: 25px;
+    border-radius: 6px;
+    display: block;
+    font-size: 15px;;
+    color: #555;
+}
+.card:hover {
+    box-shadow: 0 0 10px 0px #bbb9b9
+}
+.message-item .footer {
+    /* display: flex;
+    justify-content: space-between; */
+    font-size: 12px;
+    padding-top: 10px;
+    border-top: 1px solid #efefef;
+    position: absolute;
+    left: 15px;
+    right: 15px;
+    bottom: 0;
+    color: #999;
+}
+.msg-actions a:hover {
+    text-decoration: underline;
+}
+.msg-actions a {
+    display: inline-block;
+}
+.mb-10 {
+    margin-bottom: 10px;
+}
+.mr-10 {
+    margin-right: 10px;
+}
+.mt-10 {
+    margin-top: 10px;
+}
+.user-photo {
+    width: 80px;
+    height: 80px;
+}
+.user-body {
+    min-height: 80px;
+    width: calc(100% - 80px);
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-top: 10px;
+    position: relative;
+}
+.background-image {
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+.message-item .content,
+.message-item .user-body,
+.message-item.left .user-photo,
+.message-item.left .msg-actions,
+.message-item.right .date {
+    float: left;
+}
+.message-item.right .user-photo,
+.message-item.right .msg-actions,
+.message-item.left .date {
+    float: right;
+}
+.meta-type {
+    color: #999;
+    font-size: 12px;
+    text-decoration: underline;
 }

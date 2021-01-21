@@ -38,7 +38,23 @@ $(function() {
                     results: response
                 };
             }
-        }
+        },
+        templateResult: UserWithImage,
     });
+    
+    function UserWithImage(user) {
+        console.log(user);
+        var root = '<?php echo $this->webroot; ?>';
+        if (user.loading) {
+            return user.text;
+        }
+
+        var $html = $(`
+            <div><img width="30" src="${root}/img/uploads/profiles/${user.image}"/> ${user.text}</div>
+        `);
+
+        return $html;
+    }
 });
+
 </script>
