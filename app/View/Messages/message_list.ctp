@@ -1,7 +1,7 @@
 <div class="container">
-    <h1>Message List</h1>
 
     <div class="message-wrapper">
+        <h1 style="margin-bottom:25px">Message List</h1>
         <?php 
             echo $this->Html->link(
                 'New Message',
@@ -35,8 +35,9 @@
                     <div class="footer">
                         <div class="msg-actions">
                             <?php 
+                                $authId = (AuthComponent::user('id') == $message['Message']['from_id']) ? $message['Message']['to_id'] : $message['Message']['from_id'];
                                 echo $this->Html->link('View Conversation',
-                                    array('action' => 'messageDetails', $message['Message']['from_id']),
+                                    array('action' => 'messageDetails', $authId),
                                     array('class' => 'mr-10')
                                 );
                             ?>
@@ -54,20 +55,54 @@
                 </div>
             </div>
         <?php endforeach; ?>
-        <div class="text-center">
-            <?php 
-                echo $this->Form->button(
-                    'Load More',
-                    array('type' => 'button', 'class' => 'btn btn-primary btn-loadmore')
-                );
-            ?>
-        </div>
+
+        <?php if ($this->Paginator->params()['count'] > 0) : ?>
+            <div class="text-center" data-count="0" data-total="<?php echo $this->Paginator->params()['count']; ?>">
+                <div class="loadmore-btn"></div>
+                <?php 
+                    echo $this->Form->button(
+                        'Load More',
+                        array('type' => 'button', 'class' => 'btn btn-primary btn-loadmore')
+                    );
+                ?>
+            </div>
+        <?php endif; ?>
     </div>
 </div>
 <script>
     $(function() {
         $('.btn-loadmore').on('click', function() {
+            var count = $(this).parent().attr('data-count');
+            var total = $(this).parent().data('total');
+            var limit = 2;
+            count = parseInt(count) + parseInt(limit);
+    
+            $(this).parent().attr('data-count', count);
+            var url = '<?php echo $this->Html->url(array('controller' => 'messages', 'action' => 'loadMore')); ?>/';
+            url = url + count;
+
+            // $('.loadmore-btn').show();
+            $('.btn-loadmore').hide();
             
+            $.ajax({
+                url: url,
+                beforeSend: function () {
+                    $('.loadmore-btn').html('<div class="loading"><div></div><div></div><div></div></div>');
+                },
+                success: function (response) {
+                    setTimeout(function() {
+                        $('.message-item:last').after(response).show().fadeIn('slow');
+                        $('.loadmore-btn').remove();
+                        $('.btn-loadmore').show().text('Load More');
+                        var row = count + limit;
+                        
+                        if (row >= total) {
+                            $('.btn-loadmore').parent().html('<hr><i>--- nothing follows ---</i>');
+                            $('.btn-loadmore').remove();
+                        }
+                    }, 1500);
+                }
+            });
         });
     });
 </script>
