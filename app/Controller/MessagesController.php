@@ -2,7 +2,7 @@
 
 class MessagesController extends AppController {
     public $components = array('Paginator', 'Flash');
-    public $limit = 2;
+    public $limit = 10;
 
     private function rr($data) {
         echo '<pre>';
@@ -70,6 +70,41 @@ class MessagesController extends AppController {
     }
     public function messageDetails($id = null) {
         $authId = $this->Auth->user('id');
+
+        // load User Model
+        $this->loadModel('User');
+        $this->User->id = $id;
+        $user = $this->User->read('id');
+
+        // paginate messages
+        $this->fetchMessages(0, $id);
+
+        $messages = $this->paginate('Message');
+        $this->set(compact('user', 'messages'));
+    }
+    public function replyMessage() {
+        $authId = $this->Auth->user('id');
+        if ($this->request->is('post')) {
+            $toId = $this->request->data['Message']['to_id'];
+            $this->request->data['Message']['from_id'] = $authId;
+            
+            if ($this->Message->save($this->request->data)) {
+
+                $this->layout = false;
+                $this->fetchMessages(1, $toId);
+
+                $messages = $this->paginate('Message');
+                $this->set(compact('messages'));
+            }
+        }
+    }
+    public function fetchMessages($count = 0, $id) {
+        $authId = $this->Auth->user('id');
+        $limit = $this->limit;
+        if ($count == 1) {
+            $limit = 1;
+            $count = 0;
+        }
         $this->paginate = array('Message' => array(
             'fields' => array(
                 'Message.*',
@@ -99,14 +134,18 @@ class MessagesController extends AppController {
                     'conditions' => array('Message.to_id = Receiver.id')
                 )
             ),
-            'order' => 'created DESC'
+            'order' => 'created DESC',
+            'limit' => $limit,
+            'offset' => $count
         ));
-        $messages = $this->paginate('Message');
-        $this->set(compact('messages', 'id'));
-
-        if ($this->request->is('post')) {
-            $this->request->data['Message']['from_id'] = $this->Auth->user('id');
-            $this->Message->save($this->request->data);
+        if ($this->request->is('ajax')) {
+            $messages = $this->paginate('Message');
+           
+            $this->layout = false;
+            $this->set(compact('messages'));
         }
+    }
+    public function deleteMessage($id = null) {
+        
     }
 }

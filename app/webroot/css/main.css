@@ -85,8 +85,18 @@ input[type="file"]#photo {
     font-size: 15px;;
     color: #555;
 }
+.delete-message:hover {
+    text-decoration: underline;
+}
 .card:hover {
     box-shadow: 0 0 10px 0px #bbb9b9
+}
+.card.new-message {
+    background-color: rgba(0, 128, 0, .07);
+    box-shadow: 0 0 10px 0px #6f986f;
+    transition: all .5s linear;
+    -webkit-transition: all .5s linear;
+    -moz-transition: all .5s linear;
 }
 .message-item .footer {
     /* display: flex;
@@ -149,6 +159,7 @@ input[type="file"]#photo {
     font-size: 12px;
     text-decoration: underline;
 }
+
 /* LOADING */
 .loading {
     display: inline-block;

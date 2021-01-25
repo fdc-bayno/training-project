@@ -12,7 +12,8 @@
         <hr>
         <?php foreach ($messages as $message) : ?>
             <?php 
-                $photo = ($message['Sender']['image']) ? $this->webroot.'/img/uploads/profiles/'.$message['Sender']['image'] : $this->webroot.'/img/uploads/profiles/default.png';
+                $abosultePath = $this->webroot . '/img/uploads/profiles/';
+                $photo = ($message['Sender']['image']) ? $abosultePath.$message['Sender']['image'] : $abosultePath.'default.png';
             ?>
             <div class="card message-item <?php echo (AuthComponent::user('id') == $message['Message']['from_id'] ) ? "right" : "left"; ?> clearfix">
                 <div class="header mb-10">
@@ -92,7 +93,7 @@
                 success: function (response) {
                     setTimeout(function() {
                         $('.message-item:last').after(response).show().fadeIn('slow');
-                        $('.loadmore-btn').remove();
+                        $('.loadmore-btn').find('.loading').remove();
                         $('.btn-loadmore').show().text('Load More');
                         var row = count + limit;
                         
