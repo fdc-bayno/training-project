@@ -33,7 +33,6 @@ class UsersController extends AppController {
                     $this->User->id = $this->Auth->user('id');
                     $this->User->saveField('last_login_time', date('Y-m-d H:i:s'));
 
-                    $this->Session->setFlash(__('Thank you for registering.'));
                     $this->redirect(array('action' => 'thankYou'));
                 }
             } else {

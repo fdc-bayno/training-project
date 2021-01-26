@@ -12,14 +12,9 @@
             <div class="clearfix"></div>
             <div class="footer">
                 <div class="msg-actions">
-                    <?php
-                        if (AuthComponent::user('id') == $message['Message']['from_id']) {
-                            echo $this->Html->link('Delete',
-                                array('action' => 'messageDetails', $message['Message']['id']),
-                                array('class' => 'text-danger')
-                            );
-                        }
-                    ?>
+                    <?php if (AuthComponent::user('id') == $message['Message']['from_id']) : ?>
+                        <span data-id="<?php echo $message['Message']['id']; ?>" class="delete-message cursor">Delete</span>
+                    <?php endif; ?>
                 </div>
                 <div class="date">
                     <?php echo date('Y/m/d H:i A', strtotime($message['Message']['created'])) ?>

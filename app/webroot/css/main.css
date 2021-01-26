@@ -94,6 +94,15 @@ input[type="file"]#photo {
 .card.new-message {
     background-color: rgba(0, 128, 0, .07);
     box-shadow: 0 0 10px 0px #6f986f;
+    -webkit-box-shadow: 0 0 10px 0px #6f986f;
+    transition: all .5s linear;
+    -webkit-transition: all .5s linear;
+    -moz-transition: all .5s linear;
+}
+.card.deleted-message {
+    background-color: rgba(255, 104, 104, .07);
+    box-shadow: 0 0 10px 0px #e68f8f;
+    -webkit-box-shadow: 0 0 10px 0px #e68f8f;
     transition: all .5s linear;
     -webkit-transition: all .5s linear;
     -moz-transition: all .5s linear;

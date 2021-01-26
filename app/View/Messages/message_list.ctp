@@ -42,12 +42,7 @@
                                     array('class' => 'mr-10')
                                 );
                             ?>
-                            <?php 
-                                echo $this->Html->link('Delete',
-                                    array('action' => 'messageDetails', $message['Message']['id']),
-                                    array('class' => 'text-danger')
-                                );
-                            ?>
+                            <span id="<?php echo $authId; ?>" class="text-danger delete-message cursor">Delete</span>
                         </div>
                         <div class="date">
                             <?php echo date('Y/m/d H:i', strtotime($message['Message']['created'])) ?>
@@ -57,7 +52,7 @@
             </div>
         <?php endforeach; ?>
 
-        <?php if ($this->Paginator->params()['count'] > 0) : ?>
+        <?php if ($this->Paginator->params()['count'] > 10) : ?>
             <div class="text-center" data-count="0" data-total="<?php echo $this->Paginator->params()['count']; ?>">
                 <div class="loadmore-btn"></div>
                 <?php 
@@ -67,6 +62,11 @@
                     );
                 ?>
             </div>
+        <?php else : ?>
+            <div class="text-center">
+                <hr>
+                <i>--- nothing follows ---</i>
+            </div>
         <?php endif; ?>
     </div>
 </div>
@@ -75,14 +75,13 @@
         $('.btn-loadmore').on('click', function() {
             var count = $(this).parent().attr('data-count');
             var total = $(this).parent().data('total');
-            var limit = 2;
+            var limit = 10;
             count = parseInt(count) + parseInt(limit);
     
             $(this).parent().attr('data-count', count);
             var url = '<?php echo $this->Html->url(array('controller' => 'messages', 'action' => 'loadMore')); ?>/';
             url = url + count;
 
-            // $('.loadmore-btn').show();
             $('.btn-loadmore').hide();
             
             $.ajax({
@@ -104,6 +103,18 @@
                     }, 1500);
                 }
             });
+        });
+        $(document).on('click', '.delete-message', function() {
+            var id = $(this).attr('id');
+            var url = '<?php echo $this->Html->url(array('controller' => 'messages', 'action' => 'deleteAllMessage')); ?>';
+            var $this = $(this).parents('.message-item');
+            
+            if (confirm("Delete this message?")) {
+                $.post(url, {id: id}, function(data) {
+                    $this.addClass('deleted-message').fadeOut();
+                });
+            }
+            return false;
         });
     });
 </script>

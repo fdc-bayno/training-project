@@ -1,7 +1,7 @@
 <?php
 
 class MessagesController extends AppController {
-    public $components = array('Paginator', 'Flash');
+    public $components = array('Paginator');
     public $limit = 10;
 
     private function rr($data) {
@@ -61,6 +61,8 @@ class MessagesController extends AppController {
             'limit' => $this->limit,
             'offset' => $count,
         ));
+
+        // if load more
         if ($this->request->is('ajax')) {
             $messages = $this->paginate('Message');
            
@@ -89,21 +91,19 @@ class MessagesController extends AppController {
             $this->request->data['Message']['from_id'] = $authId;
             
             if ($this->Message->save($this->request->data)) {
-
                 $this->layout = false;
                 $this->fetchMessages(1, $toId);
-
-                $messages = $this->paginate('Message');
-                $this->set(compact('messages'));
             }
         }
     }
     public function fetchMessages($count = 0, $id) {
         $authId = $this->Auth->user('id');
         $limit = $this->limit;
+
+        // if reply
         if ($count == 1) {
             $limit = 1;
-            $count = 0;
+            $count = 0; 
         }
         $this->paginate = array('Message' => array(
             'fields' => array(
@@ -138,14 +138,35 @@ class MessagesController extends AppController {
             'limit' => $limit,
             'offset' => $count
         ));
-        if ($this->request->is('ajax')) {
+
+        // if load more
+        if ($this->request->is(['post', 'ajax'])) {
             $messages = $this->paginate('Message');
            
             $this->layout = false;
             $this->set(compact('messages'));
         }
     }
-    public function deleteMessage($id = null) {
-        
+    public function deleteMessage() {
+        $id = $this->request->data['id'];
+        $this->Message->id = $id;
+        $this->Message->saveField('status', 'deleted');
+        exit;
+    }
+    public function deleteAllMessage() {
+        $authId = $this->Auth->user('id');
+        $toId = $this->request->data['id'];
+
+        $this->Message->updateAll(
+            array('Message.status' => "'deleted'"),
+            array(
+                "Message.id IN
+                (SELECT id FROM messages
+                WHERE 
+                    (Message.from_id = {$authId} && Message.to_id = {$toId}) || 
+                    (Message.from_id = {$toId} && Message.to_id = {$authId}))"
+            )
+        );
+        $this->rr($messages);
     }
 }

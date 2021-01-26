@@ -37,7 +37,7 @@
                         <div class="footer">
                             <div class="msg-actions">
                                 <?php if (AuthComponent::user('id') == $message['Message']['from_id']) : ?>
-                                    <span data-id="<?php echo $message['Message']['id']; ?>" class="text-danger delete-message cursor">Delete</span>
+                                    <span data-id="<?php echo $message['Message']['id']; ?>" data-toid="<?php echo $user['User']['id']; ?>" class="text-danger delete-message cursor">Delete</span>
                                 <?php endif; ?>
                             </div>
                             <div class="date">
@@ -49,7 +49,7 @@
             <?php endforeach; ?>
         </div>
         
-        <?php if ($this->Paginator->params()['count'] > 0) : ?>
+        <?php if ($this->Paginator->params()['count'] > 10) : ?>
             <div class="text-center" data-count="10" data-total="<?php echo $this->Paginator->params()['count']; ?>">
                 <div class="loadmore-btn"></div>
                 <?php 
@@ -59,8 +59,12 @@
                     );
                 ?>
             </div>
+        <?php else : ?>
+            <div class="text-center">
+                <hr>
+                <i>--- nothing follows ---</i>
+            </div>
         <?php endif; ?>
-        <hr>
     </div>
 </div>
 <script>
@@ -139,8 +143,17 @@
             });
         });
 
-        $('.delete-message').on('click', function() {
-            
+        $(document).on('click', '.delete-message', function() {
+            var data = $(this).data();
+            var $this = $(this).parents('.message-item');
+            var url = '<?php echo $this->Html->url(array('controller' => 'messages', 'action' => 'deleteMessage')); ?>';
+
+            if (confirm("Delete this message?")) {
+                $.post(url, data, function(response) {
+                    $this.addClass('deleted-message').fadeOut();
+                });
+            }
+            return false;
         });
     });
 </script>
