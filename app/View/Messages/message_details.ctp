@@ -89,7 +89,6 @@
                     setTimeout(function() {
                         msg.val('');
                         $('.message-details-container').prepend(response).show().fadeIn();
-                        $('.message-item').last().remove();
                         $('#btn-reply').parent().removeClass('text-center');
                         $('#btn-reply').parent().find('.loading').remove();
                         $('#btn-reply').show();
